@@ -1,10 +1,10 @@
 # CO2-Sound
 
-# base project libs
+## base project libs
 
 * `pip install -U pip`
 * `pip install -Ur requirements.txt`
 
-# links
+## links
 
 * [aidiary | urban-cound-classification](https://github.com/aidiary/urban-sound-classification-keras)
