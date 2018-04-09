@@ -7,4 +7,4 @@
 
 ## links
 
-* [aidiary | urban-cound-classification](https://github.com/aidiary/urban-sound-classification-keras)
+* [aidiary | urban-sound-classification](https://github.com/aidiary/urban-sound-classification-keras)
