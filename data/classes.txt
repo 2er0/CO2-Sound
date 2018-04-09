@@ -1,7 +1,6 @@
 air_conditioner
 car_horn
 children_playing
-Class
 dog_bark
 drilling
 engine_idling
