@@ -106,3 +106,5 @@ ENV/
 .directory
 gui/
 *.env
+Train/
+Test/
