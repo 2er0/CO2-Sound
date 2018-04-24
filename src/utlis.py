@@ -6,9 +6,6 @@ from matplotlib.pyplot import specgram
 
 plt.style.use('ggplot')
 
-plt.rcParams['font.family'] = 'serif'
-plt.rcParams['font.serif'] = 'Ubuntu'
-plt.rcParams['font.monospace'] = 'Ubuntu Mono'
 plt.rcParams['font.size'] = 12
 plt.rcParams['axes.labelsize'] = 11
 plt.rcParams['axes.labelweight'] = 'bold'
@@ -34,9 +31,9 @@ def load_by_id(ids: list, path: str):
 
 def plot_waves(sound_names, raw_sounds):
     i = 1
-    fig = plt.figure(figsize=(25, 60), dpi=900)
+    fig = plt.figure(figsize=(25, 60), dpi=300)
     for n, f in zip(sound_names, raw_sounds):
-        plt.subplot(10, 1, i)
+        plt.subplot(5, 1, i)
         librosa.display.waveplot(np.array(f), sr=22050)
         plt.title(n.title())
         i += 1
@@ -44,11 +41,11 @@ def plot_waves(sound_names, raw_sounds):
     plt.savefig('../data/waves.png')
 
 
-def plot_specgram(sound_names, raw_sounds):
+def plot_spectrogram(sound_names, raw_sounds):
     i = 1
-    fig = plt.figure(figsize=(25, 60), dpi=900)
+    fig = plt.figure(figsize=(25, 60), dpi=300)
     for n, f in zip(sound_names, raw_sounds):
-        plt.subplot(10, 1, i)
+        plt.subplot(5, 1, i)
         specgram(np.array(f), Fs=22050)
         plt.title(n.title())
         i += 1
@@ -56,12 +53,12 @@ def plot_specgram(sound_names, raw_sounds):
     plt.savefig('../data/specgram.png')
 
 
-def plot_log_power_specgram(sound_names, raw_sounds):
+def plot_log_power_spectrogram(sound_names, raw_sounds):
     i = 1
-    fig = plt.figure(figsize=(25, 60), dpi=900)
+    fig = plt.figure(figsize=(25, 60), dpi=300)
     for n, f in zip(sound_names, raw_sounds):
-        plt.subplot(10, 1, i)
-        D = librosa.logamplitude(np.abs(librosa.stft(f)) ** 2, ref_power=np.max)
+        plt.subplot(5, 1, i)
+        D = librosa.amplitude_to_db(np.abs(librosa.stft(f)) ** 2, ref=np.max)
         librosa.display.specshow(D, x_axis='time', y_axis='log')
         plt.title(n.title())
         i += 1
