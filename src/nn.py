@@ -3,7 +3,7 @@ import pandas as pd
 import utlis as ut
 
 # global variables
-validationSample = 5
+validationSample = 20
 
 # config variables
 mainPath = '/../data/'
@@ -29,6 +29,6 @@ validate_wavs = ut.load_by_id(validate['ID'].values, wavPath)
 # test plot of converted wav's
 #ut.plot_waves(validate['Class'].values, validate_wavs)
 #ut.plot_spectrogram(validate['Class'].values, validate_wavs)
-ut.plot_log_power_spectrogram(validate['Class'].values, validate_wavs)
+#ut.plot_log_power_spectrogram(validate['Class'].values, validate_wavs)
 
 #train_data = ut.load_sounds(train_short['ID'])

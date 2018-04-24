@@ -29,14 +29,20 @@ def load_by_id(ids: list, path: str):
     return load_sounds(wav_files)
 
 
+# plot stop criteria
+stop = 5
+
+
 def plot_waves(sound_names, raw_sounds):
     i = 1
     fig = plt.figure(figsize=(25, 60), dpi=300)
     for n, f in zip(sound_names, raw_sounds):
-        plt.subplot(5, 1, i)
+        plt.subplot(stop, 1, i)
         librosa.display.waveplot(np.array(f), sr=22050)
         plt.title(n.title())
         i += 1
+        if i >= stop:
+            break
     plt.suptitle('Figure 1: Waveplot', x=0.5, y=0.915, fontsize=18)
     plt.savefig('../data/waves.png')
 
@@ -45,10 +51,12 @@ def plot_spectrogram(sound_names, raw_sounds):
     i = 1
     fig = plt.figure(figsize=(25, 60), dpi=300)
     for n, f in zip(sound_names, raw_sounds):
-        plt.subplot(5, 1, i)
+        plt.subplot(stop, 1, i)
         specgram(np.array(f), Fs=22050)
         plt.title(n.title())
         i += 1
+        if i >= stop:
+            break
     plt.suptitle('Figure 2: Spectrogram', x=0.5, y=0.915, fontsize=18)
     plt.savefig('../data/specgram.png')
 
@@ -57,10 +65,12 @@ def plot_log_power_spectrogram(sound_names, raw_sounds):
     i = 1
     fig = plt.figure(figsize=(25, 60), dpi=300)
     for n, f in zip(sound_names, raw_sounds):
-        plt.subplot(5, 1, i)
+        plt.subplot(stop, 1, i)
         D = librosa.amplitude_to_db(np.abs(librosa.stft(f)) ** 2, ref=np.max)
         librosa.display.specshow(D, x_axis='time', y_axis='log')
         plt.title(n.title())
         i += 1
+        if i >= stop:
+            break
     plt.suptitle('Figure 3: Log power spectrogram', x=0.5, y=0.915, fontsize=18)
     plt.savefig('../data/log_power_specgram.png')
