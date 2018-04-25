@@ -15,6 +15,22 @@ plt.rcParams['ytick.labelsize'] = 10
 plt.rcParams['legend.fontsize'] = 11
 plt.rcParams['figure.titlesize'] = 13
 
+build_file_path = lambda i, p: p + str(i) + '.wav'
+
+
+urban_class = {
+    'air_conditioner': 0,
+    'car_horn': 1,
+    'children_playing': 2,
+    'dog_bark': 3,
+    'drilling': 4,
+    'engine_idling': 5,
+    'gun_shot': 6,
+    'jackhammer': 7,
+    'siren': 8,
+    'street_music': 9
+}
+
 
 def load_sounds(paths):
     raw_sounds = []
@@ -24,9 +40,28 @@ def load_sounds(paths):
     return raw_sounds
 
 
-def load_by_id(ids: list, path: str):
-    wav_files = list(map(lambda x: path + str(x) + '.wav', ids))
-    return load_sounds(wav_files)
+def load_by_id(i: int, p: str):
+    return load_sounds([build_file_path(i, p)])
+
+
+def load_by_ids(ids: list, p: str):
+    wav_files = list(map(lambda i: load_by_id(i, p), ids))
+    return wav_files
+
+
+def extract_by_id(i: int, p: str):
+    return extract_feature(build_file_path(i, p))
+
+
+def extract_by_ids(ids: list, p: str):
+    wav_files = list(map(lambda i: extract_by_id(i, p), ids))
+    return wav_files
+
+
+def one_hot_encode(label):
+    vec = np.zeros(10)
+    vec[urban_class[label]] = 1
+    return vec
 
 
 # plot stop criteria
@@ -84,4 +119,4 @@ def extract_feature(file_name):
     mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T, axis=0)
     contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T, axis=0)
     tonnetz = np.mean(librosa.feature.tonnetz(y=librosa.effects.harmonic(X), sr=sample_rate).T, axis=0)
-    return mfccs, chroma, mel, contrast, tonnetz
+    return np.hstack([mfccs, chroma, mel, contrast, tonnetz])

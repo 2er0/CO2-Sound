@@ -13,20 +13,28 @@ train_path_long = os.getcwd() + mainPath + 'train_long.csv'
 test_path = os.getcwd() + mainPath + 'test.csv'
 
 # read train csv mapping
-train_short = pd.read_csv(train_path_short)
+train = pd.read_csv(train_path_short)
 
 # split data
-validate = pd.DataFrame(train_short.sample(validationSample))
-train_short = pd.DataFrame(train_short.drop(validate.index))
+validate = train.sample(validationSample)
+train = train.drop(validate.index)
 
 # refactor index on data-frames
-train_short = pd.DataFrame(train_short.reset_index())
-validate = pd.DataFrame(validate.reset_index())
+train = train.reset_index(drop=True)
+validate = validate.reset_index(drop=True)
 
 # read wav's
-validate_wavs = ut.load_by_id(validate['ID'].values, wavPath)
+validate_wavs = ut.load_by_ids(validate['ID'].values, wavPath)
 
 # test plot of converted wav's
 #ut.plot_waves(validate['Class'].values, validate_wavs)
 #ut.plot_spectrogram(validate['Class'].values, validate_wavs)
 #ut.plot_log_power_spectrogram(validate['Class'].values, validate_wavs)
+
+# all featurs in a list(1) of list(2)
+# list(2) contains all feature values from the transformed signal in an np.hstack
+# one list(2) has currently a size of 193
+res = ut.extract_by_ids(validate['ID'].values, wavPath)
+
+print(ut.one_hot_encode(validate.iloc[0]['Class']))
+
