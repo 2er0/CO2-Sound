@@ -74,3 +74,14 @@ def plot_log_power_spectrogram(sound_names, raw_sounds):
             break
     plt.suptitle('Figure 3: Log power spectrogram', x=0.5, y=0.915, fontsize=18)
     plt.savefig('../data/log_power_specgram.png')
+
+
+def extract_feature(file_name):
+    X, sample_rate = librosa.load(file_name)
+    stft = np.abs(librosa.stft(X))
+    mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=40).T, axis=0)
+    chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T, axis=0)
+    mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T, axis=0)
+    contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T, axis=0)
+    tonnetz = np.mean(librosa.feature.tonnetz(y=librosa.effects.harmonic(X), sr=sample_rate).T, axis=0)
+    return mfccs, chroma, mel, contrast, tonnetz
