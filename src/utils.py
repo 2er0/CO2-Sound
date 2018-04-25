@@ -33,43 +33,49 @@ def build_file_path(i: int, p: str):
     return p + str(i) + '.wav'
 
 
-def load_sounds(paths):
-    raw_sounds = []
+def load_sounds(paths) -> np.ndarray:
+    raw_sounds = np.empty((0,))
     for p in paths:
         x, _ = librosa.load(p)
-        raw_sounds.append(x)
+        raw_sounds = np.vstack([raw_sounds, x])
     return raw_sounds
 
 
-def load_by_id(i: int, p: str):
+def load_by_id(i: int, p: str) -> np.ndarray:
     return load_sounds([build_file_path(i, p)])
 
 
-def load_by_ids(ids: list, p: str):
+def load_by_ids(ids: list, p: str) -> list:
     wav_files = list(map(lambda i: load_by_id(i, p), ids))
     return wav_files
 
 
-def extract_by_id(i: int, p: str):
+def extract_by_id(i: int, p: str) -> np.ndarray:
     return extract_feature(build_file_path(i, p))
 
 
-def extract_by_ids(ids: list, p: str):
+def extract_by_ids(ids: list, p: str) -> list:
     wav_files = list(map(lambda i: extract_by_id(i, p), ids))
     return wav_files
 
 
-def one_hot_encode(label: str):
+def one_hot_encode(label: str) -> np.ndarray:
     vec = np.zeros(10)
     vec[urban_class[label]] = 1
     return vec
 
 
-def one_hot_encode_list(ls: list):
-    encoded = []
+def one_hot_encode_list(ls: list) -> np.ndarray:
+    encoded = np.empty((0, len(urban_class.values())))
     for l in ls:
-        encoded.append(one_hot_encode(l))
-    return encoded
+        encoded = np.vstack([encoded, one_hot_encode(l)])
+    return np.array(encoded)
+
+
+def feature_normalize(ls: list) -> np.ndarray:
+    ls = np.array(ls)
+    ls = ls.astype('float32')
+    return ls
 
 
 # plot stop criteria
@@ -120,11 +126,14 @@ def plot_log_power_spectrogram(sound_names, raw_sounds):
 
 
 def extract_feature(file_name):
-    X, sample_rate = librosa.load(file_name)
-    stft = np.abs(librosa.stft(X))
-    mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=40).T, axis=0)
-    chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T, axis=0)
-    mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T, axis=0)
-    contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T, axis=0)
-    tonnetz = np.mean(librosa.feature.tonnetz(y=librosa.effects.harmonic(X), sr=sample_rate).T, axis=0)
-    return np.hstack([mfccs, chroma, mel, contrast, tonnetz])
+    try:
+        X, sample_rate = librosa.load(file_name)
+        stft = np.abs(librosa.stft(X))
+        mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=40).T, axis=0)
+        chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T, axis=0)
+        mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T, axis=0)
+        contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T, axis=0)
+        tonnetz = np.mean(librosa.feature.tonnetz(y=librosa.effects.harmonic(X), sr=sample_rate).T, axis=0)
+        return np.hstack([mfccs, chroma, mel, contrast, tonnetz])
+    except librosa.ParameterError:
+        print(file_name)
