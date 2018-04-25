@@ -15,9 +15,6 @@ plt.rcParams['ytick.labelsize'] = 10
 plt.rcParams['legend.fontsize'] = 11
 plt.rcParams['figure.titlesize'] = 13
 
-build_file_path = lambda i, p: p + str(i) + '.wav'
-
-
 urban_class = {
     'air_conditioner': 0,
     'car_horn': 1,
@@ -30,6 +27,10 @@ urban_class = {
     'siren': 8,
     'street_music': 9
 }
+
+
+def build_file_path(i: int, p: str):
+    return p + str(i) + '.wav'
 
 
 def load_sounds(paths):
@@ -58,10 +59,17 @@ def extract_by_ids(ids: list, p: str):
     return wav_files
 
 
-def one_hot_encode(label):
+def one_hot_encode(label: str):
     vec = np.zeros(10)
     vec[urban_class[label]] = 1
     return vec
+
+
+def one_hot_encode_list(ls: list):
+    encoded = []
+    for l in ls:
+        encoded.append(one_hot_encode(l))
+    return encoded
 
 
 # plot stop criteria
