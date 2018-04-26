@@ -108,3 +108,4 @@ gui/
 *.env
 Train/
 Test/
+Bin/
