@@ -3,7 +3,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout
 
 # # global variables
-validationSample = 30
+validationSample = 240
 wavSource = False
 
 train_waves, train_labels, validate_waves, validate_labels, test_waves, test_labels = \
