@@ -1,6 +1,6 @@
-Keras==2.1.5
+Keras==2.1.6
 pandas==0.22.0
 librosa==0.6.0
 matplotlib==2.2.2
-numpy==1.14.2
-tensorflow==1.7.0
+numpy==1.14.3
+tensorflow==1.8.0
