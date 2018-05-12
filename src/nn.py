@@ -3,19 +3,24 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout
 
 # # global variables
-validationSample = 240
+validationSample = 340
 wavSource = False
+data_type = 'nn'
+input_shape = (193,)
 
-train_waves, train_labels, validate_waves, validate_labels, test_waves, test_labels = \
-    pre.load(wavSource, validationSample)
+# validate_waves, validate_labels,
+train_waves, train_labels, test_waves, test_labels = \
+    pre.load(input_shape, data_type)
 
 batch_size = 30
 num_classes = 10
 epochs = 50
 
+print(train_waves.shape)
+
 # Define MLP
 model = Sequential()
-model.add(Dense(512, activation='sigmoid', input_shape=(193,)))
+model.add(Dense(512, activation='sigmoid', input_shape=input_shape))
 model.add(Dropout(0.2))
 model.add(Dense(512, activation='sigmoid'))
 model.add(Dropout(0.2))
@@ -33,7 +38,8 @@ history = model.fit(train_waves, train_labels,
                     batch_size=batch_size,
                     epochs=epochs,
                     verbose=1,
-                    validation_data=(validate_waves, validate_labels))
+                    validation_split=0.15)
+                    #validation_data=(validate_waves, validate_labels))
 
 # test model
 score = model.evaluate(test_waves, test_labels, verbose=0)

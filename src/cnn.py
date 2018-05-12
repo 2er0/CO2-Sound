@@ -4,29 +4,25 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 
-# # global variables
+# global variables
 validationSample = 240
 wavSource = False
 data_type = 'cnn'
 
-train_waves, train_labels, validate_waves, validate_labels, test_waves, test_labels = \
-    pre.load(wavSource, validationSample, data_type)
+input_shape = (60, 41, 2)
+
+# validate_waves, validate_labels,
+train_waves, train_labels, test_waves, test_labels = \
+    pre.load(input_shape, data_type)
 
 batch_size = 30
 num_classes = 10
 epochs = 50
 
-print(train_waves.shape)
-print(train_waves.min())
-print(train_waves.max())
+print(train_waves[0].shape)
+print(train_waves.shape, train_labels.shape)
 
-input_shape = (60, 41, 2)
 
-train_waves = train_waves.astype('float32')
-validate_waves = validate_waves.astype('float32')
-test_waves = test_waves.astype('float32')
-
-#CNN to train mnist dataset
 model = Sequential()
 model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu',
@@ -51,7 +47,8 @@ model.fit(train_waves, train_labels,
           batch_size=batch_size,
           epochs=epochs,
           verbose=1,
-          validation_data=(validate_waves, validate_labels))
+          validation_split=0.15)
+          #validation_data=(validate_waves, validate_labels))
 
 score = model.evaluate(test_waves, test_labels, verbose=0)
 print('Test loss:', score[0])
