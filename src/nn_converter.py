@@ -20,11 +20,11 @@ test_waves = ut.feature_normalize(test_waves)
 test_labels = ut.one_hot_encode_list(test['Class'].values)
 
 full_test_data = np.array(list(zip(test_waves, test_labels)))
-np.save(npPath + 'testData.npy', full_test_data)
+np.save(npPath + 'nnTestData.npy', full_test_data)
 
 train_waves = ut.extract_by_ids(train['ID'].values, wavPath)
 train_waves = ut.feature_normalize(train_waves)
 train_labels = ut.one_hot_encode_list(train['Class'].values)
 
 full_train_data = np.array(list(zip(train_waves, train_labels)))
-np.save(npPath + 'trainData.npy', full_train_data)
+np.save(npPath + 'nnTrainData.npy', full_train_data)

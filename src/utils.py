@@ -29,10 +29,12 @@ urban_class = {
 }
 
 
+# create file path to wav
 def build_file_path(i: int, p: str):
     return p + str(i) + '.wav'
 
 
+# load sounds from paths to ndarray
 def load_sounds(paths) -> np.ndarray:
     raw_sounds = np.empty((0,))
     for p in paths:
@@ -41,30 +43,46 @@ def load_sounds(paths) -> np.ndarray:
     return raw_sounds
 
 
+# load sound by id and main path
 def load_by_id(i: int, p: str) -> np.ndarray:
     return load_sounds([build_file_path(i, p)])
 
 
+# load sounds by ids and main path
 def load_by_ids(ids: list, p: str) -> list:
     wav_files = list(map(lambda i: load_by_id(i, p), ids))
     return wav_files
 
 
-def extract_by_id(i: int, p: str) -> np.ndarray:
-    return extract_feature(build_file_path(i, p))
+# extract most possible data from sound by id and path
+def extract_by_id_full(i: int, p: str) -> np.ndarray:
+    return extract_feature_full(build_file_path(i, p))
 
 
-def extract_by_ids(ids: list, p: str) -> list:
-    wav_files = list(map(lambda i: extract_by_id(i, p), ids))
+# extract most possible data from sounds by ids and path
+def extract_by_ids_full(ids: list, p: str) -> list:
+    wav_files = list(map(lambda i: extract_by_id_full(i, p), ids))
     return wav_files
 
 
+# extract most possible data from sound by id and path
+def extract_by_id_cnn(i: int, p: str) -> np.ndarray:
+    return extract_feature_cnn(build_file_path(i, p))
+
+
+# extract most possible data from sounds by ids and path
+def extract_by_ids_cnn(ids: list, p: str) -> list:
+    return list(map(lambda i: extract_by_id_cnn(i, p), ids))
+
+
+# one hot encode by given label
 def one_hot_encode(label: str) -> np.ndarray:
     vec = np.zeros(10)
     vec[urban_class[label]] = 1
     return vec
 
 
+# one hot encode by given labels
 def one_hot_encode_list(ls: list) -> np.ndarray:
     encoded = np.empty((0, len(urban_class.values())))
     for l in ls:
@@ -72,6 +90,7 @@ def one_hot_encode_list(ls: list) -> np.ndarray:
     return np.array(encoded)
 
 
+# normalize features to float32
 def feature_normalize(ls: list) -> np.ndarray:
     ls = np.array(ls)
     ls = ls.astype('float32')
@@ -125,7 +144,8 @@ def plot_log_power_spectrogram(sound_names, raw_sounds):
     plt.savefig('../data/log_power_specgram.png')
 
 
-def extract_feature(file_name):
+# extract most possible data from filename name
+def extract_feature_full(file_name):
     try:
         X, sample_rate = librosa.load(file_name)
         stft = np.abs(librosa.stft(X))
@@ -137,3 +157,31 @@ def extract_feature(file_name):
         return np.hstack([mfccs, chroma, mel, contrast, tonnetz])
     except librosa.ParameterError:
         print(file_name)
+
+
+def windows(data, window_size):
+    start = 0
+    while start < len(data):
+        yield int(start), int(start + window_size)
+        start += (window_size / 2)
+
+
+# extract most possible data from filename for cnn
+def extract_feature_cnn(file_name, bands=60, frames=41):
+    window_size = 512 * (frames - 1)
+    log_specgrams = []
+    sound_clip, sample_rate = librosa.load(file_name)
+    for (start, end) in windows(sound_clip, window_size):
+        if (len(sound_clip[start:end]) == window_size):
+            signal = sound_clip[start:end]
+            melspec = librosa.feature.melspectrogram(signal, sr=sample_rate, n_mels=bands)
+            logspec = librosa.amplitude_to_db(melspec)
+            logspec = logspec.T.flatten()
+            log_specgrams.append(logspec)
+
+    log_specgrams = np.asarray(log_specgrams).reshape(len(log_specgrams), bands, frames, 1)
+    features = np.concatenate((log_specgrams, np.zeros(np.shape(log_specgrams))), axis=3)
+    for i in range(len(features)):
+        features[i, :, :, 1] = librosa.feature.delta(features[i, :, :, 0])
+
+    return np.array(features)
