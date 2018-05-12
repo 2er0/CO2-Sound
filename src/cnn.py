@@ -7,9 +7,10 @@ from keras.layers import Conv2D, MaxPooling2D
 # # global variables
 validationSample = 240
 wavSource = False
+data_type = 'cnn'
 
 train_waves, train_labels, validate_waves, validate_labels, test_waves, test_labels = \
-    pre.load(wavSource, validationSample)
+    pre.load(wavSource, validationSample, data_type)
 
 batch_size = 30
 num_classes = 10
@@ -19,7 +20,7 @@ print(train_waves.shape)
 print(train_waves.min())
 print(train_waves.max())
 
-input_shape = (1, train_waves.shape[1], 1)
+input_shape = (60, 41, 2)
 
 train_waves = train_waves.astype('float32')
 validate_waves = validate_waves.astype('float32')
