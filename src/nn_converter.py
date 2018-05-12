@@ -11,18 +11,20 @@ train_path_short = os.getcwd() + mainPath + 'train_short.csv'
 train_path_long = os.getcwd() + mainPath + 'train_long.csv'
 test_path = os.getcwd() + mainPath + 'test.csv'
 
-# # read train csv mapping
+# read csv mappings
 train = pd.read_csv(train_path_long)
 test = pd.read_csv(test_path)
 
-test_waves = ut.extract_by_ids(test['ID'].values, wavPath)
+# transform test data
+test_waves = ut.extract_by_ids_full(test['ID'].values, wavPath)
 test_waves = ut.feature_normalize(test_waves)
 test_labels = ut.one_hot_encode_list(test['Class'].values)
 
 full_test_data = np.array(list(zip(test_waves, test_labels)))
 np.save(npPath + 'nnTestData.npy', full_test_data)
 
-train_waves = ut.extract_by_ids(train['ID'].values, wavPath)
+# transform train data
+train_waves = ut.extract_by_ids_full(train['ID'].values, wavPath)
 train_waves = ut.feature_normalize(train_waves)
 train_labels = ut.one_hot_encode_list(train['Class'].values)
 
