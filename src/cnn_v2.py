@@ -1,13 +1,14 @@
 import pre
+import numpy as np
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv1D, Conv2D, MaxPooling2D
+from keras.layers import Conv1D, Conv2D, MaxPooling1D, MaxPooling2D
 
 # # global variables
 validationSample = 240
 wavSource = False
-data_type = 'cnn'
+data_type = 'nn'
 
 train_waves, train_labels, validate_waves, validate_labels, test_waves, test_labels = \
     pre.load(wavSource, validationSample, data_type)
@@ -20,22 +21,26 @@ print(train_waves.shape)
 print(train_waves.min())
 print(train_waves.max())
 
-input_shape = (60, 41, 2)
+input_shape = (193, 1)
 
 train_waves = train_waves.astype('float32')
 validate_waves = validate_waves.astype('float32')
 test_waves = test_waves.astype('float32')
 
+train_waves = train_waves[:, :, np.newaxis]
+validate_waves = validate_waves[:, :, np.newaxis]
+test_waves = test_waves[:, :, np.newaxis]
+
 #CNN to train mnist dataset
 model = Sequential()
-model.add(Conv2D(32, kernel_size=(3, 3),
+model.add(Conv1D(32, kernel_size=3,
                  activation='relu',
                  input_shape=input_shape))
 
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(MaxPooling1D(pool_size=2))
 
-model.add(Conv2D(64, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Conv1D(64, 3, activation='relu'))
+model.add(MaxPooling1D(pool_size=2))
 
 model.add(Dropout(0.25))
 model.add(Flatten())
