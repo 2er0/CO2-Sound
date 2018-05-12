@@ -55,24 +55,40 @@ def load_by_ids(ids: list, p: str) -> list:
 
 
 # extract most possible data from sound by id and path
+# NN/MLP
 def extract_by_id_full(i: int, p: str) -> np.ndarray:
     return extract_feature_full(build_file_path(i, p))
 
 
 # extract most possible data from sounds by ids and path
+# NN/MLP
 def extract_by_ids_full(ids: list, p: str) -> list:
     wav_files = list(map(lambda i: extract_by_id_full(i, p), ids))
     return wav_files
 
 
 # extract most possible data from sound by id and path
+# CNN
 def extract_by_id_cnn(i: int, p: str) -> np.ndarray:
     return extract_feature_cnn(build_file_path(i, p))
 
 
 # extract most possible data from sounds by ids and path
+# CNN
 def extract_by_ids_cnn(ids: list, p: str) -> list:
     return list(map(lambda i: extract_by_id_cnn(i, p), ids))
+
+
+# extract most possible data from sounds by id and path
+# LSTM
+def extract_by_id_lstm(i: int, p: str) -> np.ndarray:
+    return extract_feature_lstm(build_file_path(i, p))
+
+
+# extract most possible data from sounds by ids and path
+# LSTM
+def extract_by_ids_lstm(ids: list, p: str) -> list:
+    return list(map(lambda i: extract_by_id_lstm(i, p), ids))
 
 
 # one hot encode by given label
@@ -101,6 +117,7 @@ def feature_normalize(ls: list) -> np.ndarray:
 stop = 5
 
 
+# some plot tool
 def plot_waves(sound_names, raw_sounds):
     i = 1
     fig = plt.figure(figsize=(25, 60), dpi=300)
@@ -184,4 +201,19 @@ def extract_feature_cnn(file_name, bands=60, frames=41):
     for i in range(len(features)):
         features[i, :, :, 1] = librosa.feature.delta(features[i, :, :, 0])
 
+    return np.array(features)
+
+
+# extract most possible data from filename for lstm
+def extract_feature_lstm(file_name, bands=20, frames=41):
+    window_size = 512 * (frames - 1)
+    mfccs = []
+    sound_clip, sample_rate = librosa.load(file_name)
+    for (start, end) in windows(sound_clip, window_size):
+        if (len(sound_clip[start:end]) == window_size):
+            signal = sound_clip[start:end]
+            mfcc = librosa.feature.mfcc(y=signal, sr=sample_rate, n_mfcc=bands).T.flatten()
+            mfccs.append(mfcc)
+
+    features = np.asarray(mfccs).reshape(len(mfccs), frames, bands)
     return np.array(features)
