@@ -17,6 +17,7 @@ num_classes = 10
 epochs = 50
 
 print(train_waves.shape)
+print(test_waves.shape)
 
 # Define MLP
 model = Sequential()

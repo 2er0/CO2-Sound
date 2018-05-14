@@ -20,13 +20,15 @@ num_classes = 10
 epochs = 50
 
 train_waves = train_waves[:, :, np.newaxis]
+test_waves = test_waves[:, :, np.newaxis]
 
 print(train_waves[0].shape)
 print(train_waves.shape, train_labels.shape)
+print(test_waves.shape)
 
 input_shape = (193, 1)
 
-#CNN to train mnist dataset
+#CNN with conv1D dataset
 model = Sequential()
 model.add(Conv1D(32, kernel_size=3,
                  activation='relu',

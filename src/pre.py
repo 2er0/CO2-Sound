@@ -30,7 +30,7 @@ def load(shape_type, data_type: str = 'nn'):
         test_labels = np.vstack(test[:, 1])
     else:
         test = pd.DataFrame(test)
-        test_waves = np.vstack([row[0][np.newaxis, :] for index, row in test.iterrows()])
+        test_waves = np.vstack([row[0][np.newaxis, :] for _, row in test.iterrows()])
         test_labels = np.vstack(test[1])
 
     if not test_waves[0].shape == shape_type:

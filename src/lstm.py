@@ -14,7 +14,7 @@ train_waves, train_labels, test_waves, test_labels = \
 
 batch_size = 30
 num_classes = 10
-epochs = 50
+epochs = 5
 
 print(train_waves[0].shape)
 print(train_waves.shape, train_labels.shape)
