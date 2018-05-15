@@ -1,3 +1,6 @@
+import os
+
+import after
 import pre
 import keras
 from keras.models import Sequential
@@ -22,7 +25,6 @@ epochs = 10
 print(train_waves[0].shape)
 print(train_waves.shape, train_labels.shape)
 
-
 model = Sequential()
 model.add(Conv2D(16, kernel_size=(3, 3),
                  activation='relu',
@@ -33,10 +35,10 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(32, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
-#model.add(Conv2D(32, (3, 3), activation='relu'))
-#model.add(MaxPooling2D(pool_size=(2, 2)))
+# model.add(Conv2D(32, (3, 3), activation='relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
 
-#model.add(Dropout(0.25))
+# model.add(Dropout(0.25))
 model.add(Flatten())
 model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.5))
@@ -48,14 +50,16 @@ model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer='adam',
               metrics=['accuracy'])
 
-model.fit(train_waves, train_labels,
-          batch_size=batch_size,
-          epochs=epochs,
-          verbose=1,
-          validation_split=0.15,
-          shuffle=True)
-          #validation_data=(validate_waves, validate_labels))
+history = model.fit(train_waves, train_labels,
+                    batch_size=batch_size,
+                    epochs=epochs,
+                    verbose=1,
+                    validation_split=0.15,
+                    shuffle=True)
 
 score = model.evaluate(test_waves, test_labels, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
+
+# generate plots und store them
+after.plotAll(history, score, epochs, os.path.basename(__file__))

@@ -1,3 +1,6 @@
+import os
+
+import after
 import pre
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
@@ -41,10 +44,12 @@ history = model.fit(train_waves, train_labels,
                     verbose=1,
                     validation_split=0.15,
                     shuffle=True)
-                    #validation_data=(validate_waves, validate_labels))
 
 # test model
 score = model.evaluate(test_waves, test_labels, verbose=0)
 # print result of test
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
+
+# generate plots und store them
+after.plotAll(history, score, epochs, os.path.basename(__file__))
