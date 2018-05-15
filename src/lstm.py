@@ -34,7 +34,8 @@ history = model.fit(train_waves, train_labels,
                     batch_size=batch_size,
                     epochs=epochs,
                     verbose=1,
-                    validation_split=0.15)
+                    validation_split=0.15,
+                    shuffle=True)
                     #validation_data=(validate_waves, validate_labels))
 
 # test model

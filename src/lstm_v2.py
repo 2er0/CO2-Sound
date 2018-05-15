@@ -1,12 +1,12 @@
 import pre
 from keras.models import Sequential
-from keras.layers import Dense, Dropout
+from keras.layers import Dense, LSTM
 
 # # global variables
-validationSample = 340
+validationSample = 240
 wavSource = False
-data_type = 'nn'
-input_shape = (193,)
+data_type = 'lstm'
+input_shape = (41, 20)
 
 # validate_waves, validate_labels,
 train_waves, train_labels, test_waves, test_labels = \
@@ -14,26 +14,22 @@ train_waves, train_labels, test_waves, test_labels = \
 
 batch_size = 30
 num_classes = 10
-epochs = 50
+epochs = 10
 
-print(train_waves.shape)
-print(test_waves.shape)
+print(train_waves[0].shape)
+print(train_waves.shape, train_labels.shape)
 
-# Define MLP
+# Define LSTM
 model = Sequential()
-model.add(Dense(512, activation='sigmoid', input_shape=input_shape))
-model.add(Dropout(0.2))
-model.add(Dense(512, activation='sigmoid'))
-model.add(Dropout(0.2))
+model.add(LSTM(100, input_shape=input_shape))
+model.add(Dense(128, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
-
-# View model
-model.summary()
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
 # compile model
-model.compile(loss='categorical_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', # using the cross-entropy loss function
+              optimizer='adam', # using the Adam optimiser
+              metrics=['accuracy']) # reporting the accuracy
 # train model
 history = model.fit(train_waves, train_labels,
                     batch_size=batch_size,

@@ -21,9 +21,9 @@ print(test_waves.shape)
 
 # Define MLP
 model = Sequential()
-model.add(Dense(512, activation='sigmoid', input_shape=input_shape))
-model.add(Dropout(0.2))
-model.add(Dense(512, activation='sigmoid'))
+model.add(Dense(512, activation='relu', input_shape=input_shape))
+model.add(Dropout(0.25))
+model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(num_classes, activation='softmax'))
 

@@ -15,7 +15,7 @@ load_shape = (193, )
 train_waves, train_labels, test_waves, test_labels = \
     pre.load(load_shape, data_type)
 
-batch_size = 30
+batch_size = 128
 num_classes = 10
 epochs = 50
 
@@ -53,7 +53,8 @@ model.fit(train_waves, train_labels,
           batch_size=batch_size,
           epochs=epochs,
           verbose=1,
-          validation_split=0.15)
+          validation_split=0.15,
+          shuffle=True)
           #validation_data=(validate_waves, validate_labels))
 
 score = model.evaluate(test_waves, test_labels, verbose=0)
