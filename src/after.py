@@ -11,10 +11,10 @@ def plotAll(history, score, epochs: int, name: str):
     plt.plot(history.history['acc'])
     plt.plot(history.history['val_acc'])
 
-    plt.axhline(y=accLast, color='grey')
-    plt.annotate(accLast, xy=(0, accLast), bbox=dict(boxstyle="round4", fc="w"))
-    plt.axhline(y=valAccLast, color='grey')
-    plt.annotate(valAccLast, xy=(0, valAccLast), bbox=dict(boxstyle="round4", fc="w"))
+    plt.axhline(y=accLast, color='grey', alpha=0.5)
+    plt.annotate("{0:.4f}".format(accLast), xy=(0, accLast), bbox=dict(boxstyle="round4", fc="w", alpha=0.5))
+    plt.axhline(y=valAccLast, color='grey', alpha=0.5)
+    plt.annotate("{0:.4f}".format(valAccLast), xy=(int(epochs/5), valAccLast), bbox=dict(boxstyle="round4", fc="w", alpha=0.5))
 
     plt.title('{} model accuracy - testAcc {}'.format(name, score[1]))
     plt.ylabel('Accuracy')
@@ -31,10 +31,10 @@ def plotAll(history, score, epochs: int, name: str):
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
 
-    plt.axhline(y=lossLast, color='grey')
-    plt.annotate(lossLast, xy=(0, lossLast), bbox=dict(boxstyle="round4", fc="w"))
-    plt.axhline(y=valLossLast, color='grey')
-    plt.annotate(valLossLast, xy=(0, valLossLast), bbox=dict(boxstyle="round4", fc="w"))
+    plt.axhline(y=lossLast, color='grey', alpha=0.5)
+    plt.annotate("{0:.4f}".format(lossLast), xy=(0, lossLast), bbox=dict(boxstyle="round4", fc="w", alpha=0.5))
+    plt.axhline(y=valLossLast, color='grey', alpha=0.5)
+    plt.annotate("{0:.4f}".format(valLossLast), xy=(int(epochs/5), valLossLast), bbox=dict(boxstyle="round4", fc="w", alpha=0.5))
 
     plt.title('{} model loss - testLoss {}'.format(name, score[0]))
     plt.ylabel('Loss')
