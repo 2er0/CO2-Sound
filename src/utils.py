@@ -1,6 +1,7 @@
 import librosa
 import librosa.display
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import specgram
 
@@ -32,6 +33,11 @@ urban_class = {
 # create file path to wav
 def build_file_path(i: int, p: str):
     return p + str(i) + '.wav'
+
+
+# create file path to 8k wav
+def build_file_path_8k(i: str, f: str, p:str):
+    return p + 'fold' + str(f) + '/' + i
 
 
 # load sounds from paths to ndarray
@@ -67,6 +73,25 @@ def extract_by_ids_full(ids: list, p: str) -> list:
     return wav_files
 
 
+# extract from 8k for nn
+def extract_by_ids_full_8k(data: pd.DataFrame, p: str) -> list:
+    res = list()
+
+    for row in data.iterrows():
+        sound = extract_feature_full(build_file_path_8k(row[1]['slice_file_name'], row[1]['fold'], p))
+        if len(sound) < 1:
+            continue
+
+        label = one_hot_encode(row[1]['class'])
+
+        res.append((sound, label))
+
+        if len(res) < 10:
+            break
+
+    return res
+
+
 # extract most possible data from sound by id and path
 # CNN
 def extract_by_id_cnn(i: int, p: str) -> np.ndarray:
@@ -79,6 +104,22 @@ def extract_by_ids_cnn(ids: list, p: str) -> list:
     return list(map(lambda i: extract_by_id_cnn(i, p), ids))
 
 
+# extract from 8k for cnn
+def extract_by_ids_cnn_8k(data: pd.DataFrame, p: str) -> list:
+    res = list()
+
+    for row in data.iterrows():
+        sound = extract_feature_cnn(build_file_path_8k(row[1]['slice_file_name'], row[1]['fold'], p))
+        if len(sound) < 1:
+            continue
+
+        label = one_hot_encode(row[1]['class'])
+
+        res.append((sound, label))
+
+    return res
+
+
 # extract most possible data from sounds by id and path
 # LSTM
 def extract_by_id_lstm(i: int, p: str) -> np.ndarray:
@@ -89,6 +130,25 @@ def extract_by_id_lstm(i: int, p: str) -> np.ndarray:
 # LSTM
 def extract_by_ids_lstm(ids: list, p: str) -> list:
     return list(map(lambda i: extract_by_id_lstm(i, p), ids))
+
+
+# extract from 8k for lstm
+def extract_by_ids_lstm_8k(data: pd.DataFrame, p: str) -> list:
+    res = list()
+
+    for row in data.iterrows():
+        sound = extract_feature_lstm(build_file_path_8k(row[1]['slice_file_name'], row[1]['fold'], p))
+        if len(sound) < 1:
+            continue
+
+        label = one_hot_encode(row[1]['class'])
+
+        res.append((sound, label))
+
+        if len(res) < 10:
+            break
+
+    return res
 
 
 # one hot encode by given label

@@ -109,3 +109,5 @@ gui/
 Train/
 Test/
 Bin/
+8k/
+models/

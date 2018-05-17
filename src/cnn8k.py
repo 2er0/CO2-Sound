@@ -2,37 +2,49 @@ import os
 
 import after
 import pre
+import keras
 from keras.models import Sequential
-from keras.layers import Dense, LSTM
+from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Conv2D, MaxPooling2D
 
-# # global variables
+# global variables
 validationSample = 240
 wavSource = False
-data_type = 'lstm'
-input_shape = (41, 20)
+data_type = 'cnn8k'
+
+input_shape = (60, 41, 2)
 
 # validate_waves, validate_labels,
 train_waves, train_labels, test_waves, test_labels = \
-    pre.load(input_shape, data_type)
+    pre.load8k(input_shape, data_type)
 
-batch_size = 30
+batch_size = 128
 num_classes = 10
-epochs = 50
+epochs = 25
 
 print(train_waves[0].shape)
 print(train_waves.shape, train_labels.shape)
 
-# Define LSTM
 model = Sequential()
-model.add(LSTM(100, input_shape=input_shape))
-model.add(Dense(num_classes, activation='softmax'))
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+model.add(Conv2D(32, kernel_size=(3, 3),
+                 activation='relu',
+                 input_shape=input_shape))
 
-# compile model
-model.compile(loss='categorical_crossentropy', # using the cross-entropy loss function
-              optimizer='adam', # using the Adam optimiser
-              metrics=['accuracy']) # reporting the accuracy
-# train model
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model.add(Dropout(0.25))
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(num_classes, activation='softmax'))
+
+model.compile(loss=keras.losses.categorical_crossentropy,
+              optimizer='adam',
+              metrics=['accuracy'])
+
 history = model.fit(train_waves, train_labels,
                     batch_size=batch_size,
                     epochs=epochs,
@@ -40,9 +52,7 @@ history = model.fit(train_waves, train_labels,
                     validation_split=0.15,
                     shuffle=True)
 
-# test model
 score = model.evaluate(test_waves, test_labels, verbose=0)
-# print result of test
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 

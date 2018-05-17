@@ -8,12 +8,12 @@ from keras.layers import Dense, LSTM
 # # global variables
 validationSample = 240
 wavSource = False
-data_type = 'lstm'
+data_type = 'lstm8k'
 input_shape = (41, 20)
 
 # validate_waves, validate_labels,
 train_waves, train_labels, test_waves, test_labels = \
-    pre.load(input_shape, data_type)
+    pre.load8k(input_shape, data_type)
 
 batch_size = 30
 num_classes = 10
