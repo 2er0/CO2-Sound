@@ -42,3 +42,9 @@ def plotAll(history, score, epochs: int, name: str):
     plt.legend(['Train', 'Validation'], loc='center right')
     plt.draw()
     plt.savefig('../data/results/{}_loss.png'.format(name))
+
+
+# save model to file
+def saveModel(model, name: str):
+    name = name.split('.')[0]
+    model.save('../data/models/{}.h5'.format(name))

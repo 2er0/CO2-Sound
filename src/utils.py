@@ -86,9 +86,6 @@ def extract_by_ids_full_8k(data: pd.DataFrame, p: str) -> list:
 
         res.append((sound, label))
 
-        if len(res) < 10:
-            break
-
     return res
 
 
@@ -144,9 +141,6 @@ def extract_by_ids_lstm_8k(data: pd.DataFrame, p: str) -> list:
         label = one_hot_encode(row[1]['class'])
 
         res.append((sound, label))
-
-        if len(res) < 10:
-            break
 
     return res
 

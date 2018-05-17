@@ -58,3 +58,5 @@ print('Test accuracy:', score[1])
 
 # generate plots und store them
 after.plotAll(history, score, epochs, os.path.basename(__file__))
+
+after.saveModel(model, os.path.basename(__file__))

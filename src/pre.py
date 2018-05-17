@@ -56,6 +56,8 @@ def load(shape_type, data_type: str = 'nn'):
 def load8k(shape_type, data_type: str = 'nn8k'):
     train = pd.DataFrame(np.load(npyPath + data_type + 'TrainData.npy'))
 
+    train = train.sample(frac=1).reset_index(drop=True)
+
     testCount = int(train.shape[0] / 5)
     test = train.sample(testCount, replace=True)
     train = train.drop(test.index)
