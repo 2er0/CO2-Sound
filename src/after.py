@@ -65,7 +65,10 @@ def plot_confusion_matrix(cm, count, title,
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     """
-    cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
+    plt.clf()
 
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title("Confusion matrix | " + str(count) + " | " + title)

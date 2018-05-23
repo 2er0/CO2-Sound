@@ -30,24 +30,6 @@ model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(num_classes, activation='softmax'))
 
-confplot = True
-if confplot:
-    name = os.path.basename(__file__).split('.')[0]
-    model.load_weights('../data/models/' + str(name) + '.h5')
-
-    test_labels_pred = model.predict(test_waves)
-    test_labels_pred = test_labels_pred.argmax(axis=-1)
-    test_labels = test_labels.argmax(axis=-1)
-    count = test_waves.shape[0]
-
-    # Confusion matrix
-    from sklearn.metrics import confusion_matrix
-    confmatrix = confusion_matrix(test_labels, test_labels_pred)
-
-    after.plot_confusion_matrix(confmatrix, count, name)
-
-    exit(0)
-
 # View model
 model.summary()
 
@@ -73,3 +55,15 @@ print('Test accuracy:', score[1])
 after.plotAll(history, score, epochs, os.path.basename(__file__))
 
 after.saveModel(model, os.path.basename(__file__))
+
+test_labels_pred = model.predict(test_waves)
+test_labels_pred = test_labels_pred.argmax(axis=-1)
+test_labels = test_labels.argmax(axis=-1)
+count = test_waves.shape[0]
+
+# Confusion matrix
+from sklearn.metrics import confusion_matrix
+confmatrix = confusion_matrix(test_labels, test_labels_pred)
+
+name = os.path.basename(__file__).split('.')[0]
+after.plot_confusion_matrix(confmatrix, count, name)

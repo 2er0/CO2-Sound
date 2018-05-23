@@ -30,7 +30,7 @@ model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(num_classes, activation='softmax'))
 
-confplot = False
+confplot = True
 if confplot:
     name = os.path.basename(__file__).split('.')[0]
     model.load_weights('../data/models/' + str(name) + '.h5')
