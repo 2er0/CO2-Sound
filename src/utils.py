@@ -216,15 +216,37 @@ def plot_log_power_spectrogram(sound_names, raw_sounds):
 
 
 # extract most possible data from filename name
+# mean of every transformed time-slice for each feature
 def extract_feature_full(file_name):
     try:
         X, sample_rate = librosa.load(file_name)
+        # Short-time Fourier transform
+        # http://librosa.github.io/librosa/generated/librosa.core.stft.html?highlight=stft#librosa.core.stft
         stft = np.abs(librosa.stft(X))
+
+        # Mel-frequency cepstral coefficients
+        # http://librosa.github.io/librosa/generated/librosa.feature.mfcc.html
         mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=40).T, axis=0)
+
+        # Compute a chromagram from a waveform or power spectrogram - MusikNoten
+        # http://librosa.github.io/librosa/generated/librosa.feature.chroma_stft.html
         chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T, axis=0)
+
+        # Compute a mel-scaled spectrogram
+        # http://librosa.github.io/librosa/generated/librosa.feature.melspectrogram.html
         mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T, axis=0)
+
+        # Compute spectral contrast - each row of spectral contrast values corresponds to a given octave-based frequency
+        # http://librosa.github.io/librosa/generated/librosa.feature.spectral_contrast.html
         contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T, axis=0)
+
+        # Extract harmonic elements from an audio time-series - audio time series of just the harmonic portion
+        # http://librosa.github.io/librosa/generated/librosa.effects.harmonic.html
+        # and
+        # Computes the tonal centroid features (tonnetz)
+        # http://librosa.github.io/librosa/generated/librosa.feature.tonnetz.html
         tonnetz = np.mean(librosa.feature.tonnetz(y=librosa.effects.harmonic(X), sr=sample_rate).T, axis=0)
+
         return np.hstack([mfccs, chroma, mel, contrast, tonnetz])
     except librosa.ParameterError:
         print(file_name)
@@ -253,6 +275,8 @@ def extract_feature_cnn(file_name, bands=60, frames=41):
     log_specgrams = np.asarray(log_specgrams).reshape(len(log_specgrams), bands, frames, 1)
     features = np.concatenate((log_specgrams, np.zeros(np.shape(log_specgrams))), axis=3)
     for i in range(len(features)):
+        # Compute delta features: local estimate of the derivative of the input data along the selected axis
+        # http://librosa.github.io/librosa/generated/librosa.feature.delta.html
         features[i, :, :, 1] = librosa.feature.delta(features[i, :, :, 0])
 
     return np.array(features)
