@@ -28,6 +28,27 @@ model.add(SimpleRNN(100, input_shape=input_shape))
 model.add(Dense(num_classes, activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
+confplot = False
+if confplot:
+    name = os.path.basename(__file__).split('.')[0]
+    model.load_weights('../data/models/' + str(name) + '.h5')
+
+    test_labels_pred = model.predict(test_waves)
+    test_labels_pred = test_labels_pred.argmax(axis=-1)
+    test_labels = test_labels.argmax(axis=-1)
+    count = test_waves.shape[0]
+
+    # Confusion matrix
+    from sklearn.metrics import confusion_matrix
+    confmatrix = confusion_matrix(test_labels, test_labels_pred)
+
+    after.plot_confusion_matrix(confmatrix, count, name)
+
+    exit(0)
+
+# View model
+model.summary()
+
 # compile model
 model.compile(loss='categorical_crossentropy', # using the cross-entropy loss function
               optimizer='adam', # using the Adam optimiser

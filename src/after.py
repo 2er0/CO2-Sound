@@ -1,4 +1,8 @@
+import itertools
+import numpy as np
 import matplotlib.pyplot as plt
+
+import utils as ut
 
 # history,
 def plotAll(history, score, epochs: int, name: str):
@@ -48,3 +52,31 @@ def plotAll(history, score, epochs: int, name: str):
 def saveModel(model, name: str):
     name = name.split('.')[0]
     model.save('../data/models/{}.h5'.format(name))
+
+
+# generate confMatrix
+# http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
+def plot_confusion_matrix(cm, count, title,
+                          normalize=True,
+                          cmap=plt.cm.Blues):
+
+    classes = ut.urban_class.keys()
+    """
+    This function prints and plots the confusion matrix.
+    Normalization can be applied by setting `normalize=True`.
+    """
+    cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title("Confusion matrix | " + str(count) + " | " + title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=90)
+    plt.yticks(tick_marks, classes)
+
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+
+    plt.draw()
+    plt.savefig('../data/results/{}_matrix.png'.format(title))
