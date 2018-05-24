@@ -33,13 +33,13 @@ input_shape = (193, 1)
 
 # CNN with conv1D dataset
 model = Sequential()
-model.add(Conv1D(32, kernel_size=3,
+model.add(Conv1D(32, kernel_size=5,
                  activation='relu',
                  input_shape=input_shape))
 
 model.add(MaxPooling1D(pool_size=2))
 
-model.add(Conv1D(64, 3, activation='relu'))
+model.add(Conv1D(64, 5, activation='relu'))
 model.add(MaxPooling1D(pool_size=2))
 
 model.add(Dropout(0.25))
